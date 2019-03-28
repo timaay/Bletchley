@@ -77,7 +77,7 @@ names = []
 # For loop to extract the ESG scores and name
 for f in files:
     scores.append(re.findall("_\d_\d_\d_\d", f))
-    names.append(re.findall("text_10k_(.*)(?=_\d_\d_\d_)", f))
+    names.append(re.findall("text_10k_(.*)(?=.txt)", f))
 
 # Make the names into a list (previously it was a list of lists)
 names_joined = [' '.join(x) for x in names]
@@ -86,7 +86,8 @@ text_dict = {}
 
 # Create a dictionary with keys as the file names (only the unique identifier for each company)
 # and as values, the text
-for file in files:
-    for name in names_joined:
-        with open(file, 'r') as myfile:
-            text_dict[name] = myfile.read().replace('\n', ' ')
+for file, name in zip(files, names_joined):
+    with open(file, "r") as myfile:
+        text_dict[name] = myfile.read().replace("\n", " ")
+
+df_text = pd.DataFrame(text_dict.items(), columns=["id", "text"])
