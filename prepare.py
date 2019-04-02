@@ -91,3 +91,59 @@ for file, name in zip(files, names_joined):
         text_dict[name] = myfile.read().replace("\n", " ")
 
 df_text = pd.DataFrame(text_dict.items(), columns=["id", "text"])
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+import tensorflow as tf 
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+import numpy as np
+# fix random seed for reproducibility
+np.random.seed(7)
+
+# create model
+model = tf.keras.modelsSequential()
+model.add(Dense(12, input_dim=100, activation='relu')) # 100 12 8 4 model
+model.add(Dense(8, activation='relu'))
+model.add(Dense(4, activation='sigmoid'))
+
+# model.compile(optimizer = 'sgd', loss = 'sparse_categorical_crossentropy', metrics = ['accuracy'])
+
+# model.fit(x_train, y_train, epochs = 3, batch_size = 8)
+
+# Define custom loss
+def custom_loss(layer):
+
+    # Create a loss function that adds the MSE loss to the mean of all squared activations of a specific layer
+    def loss(y_true,y_pred):
+        correct = 0
+        for i in range(2):
+            if (y_pred[i] == y_true[i):
+                                    correct = correct + 1
+            if (correct == 0):
+                                    correct = 1
+        return (y_pred[3] == y_true[3])*(correct)
+   
+    # Return a function
+    return loss
+    
+# Compile the model
+model.compile(optimizer='adam',
+              loss=custom_loss(layer), # Call the loss function with the selected layer
+              metrics=['accuracy'])
+
+
+val_loss, val_acc = model.evaluate(x_test, y_test)
+print(val_loss, val_acc)
+
+model.save('oscar>stelios.model')
+
+new_model = tf.keras.models.load_model('oscar>stelios.model')
+
+predictions = new_model.predict([x_test])
+
+print(predictions)
+print (np.argmax(predictions[0]))
+
